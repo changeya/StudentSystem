@@ -1,0 +1,75 @@
+﻿@model Class_system_Backstage_pj.Models.T課程班級
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="p-4">
+    <h1 class="text-center">Details</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">T課程班級</h4>
+        </div>
+
+        <div class="card-body">
+            <dl>
+                <div class="row">
+                    <div class="col-md-6">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.班級名稱)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.班級名稱)
+                        </dd>
+                    </div>
+                    <div class="col-md-6">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.班級導師)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.班級導師.信箱)
+                        </dd>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.入學日期)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.入學日期)
+                        </dd>
+                    </div>
+                    <div class="col-md-6">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.結訓日期)
+                        </dt>
+                        <dd>
+                            @Html.DisplayFor(model => model.結訓日期)
+                        </dd>
+                    </div>
+                </div>
+               
+             
+            </dl>
+            <hr />
+            <div class="d-flex gap-2">
+                <div >
+                    <button>班級科目</button>
+                </div>
+                <div>
+                    <button>課程安排</button>
+                </div>
+               
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <a asp-action="Edit" asp-route-id="@Model?.班級id">Edit</a> |
+            <a asp-action="Index">Back to List</a>
+        </div>
+    </div>
+
+</div>

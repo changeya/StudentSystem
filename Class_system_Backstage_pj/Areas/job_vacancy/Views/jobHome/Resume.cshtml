@@ -1,0 +1,193 @@
+﻿@model ResumeListViewModel
+@{
+    ViewData["Title"] = "履歷管理";
+}
+
+@section Styles
+{
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+    @* <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script> *@
+    <link href="~/css/datatablesinline.css" rel="stylesheet" />
+    <style>
+        /*  頭部表格欄位樣式 */
+        .imthead {
+            background-color: #C4E1E1;
+            font-weight: 700;
+        }
+        /*  新刪修按鈕排列方式 */
+        .crudlist {
+            display: flex;
+            align-items: center;
+            grid-gap: 10px;
+        }
+            /*  新刪修按鈕大小微調 */
+            .crudlist li {
+                padding: 15px;
+                margin-bottom: 0;
+            }
+    </style>
+}
+
+<div class="header">
+    <!-- 主頁上方操作流程序，記得有新增頁面時要記得編輯 -->
+    <div class="left">
+        <h1>@ViewData["Title"]</h1>
+        <ul class="breadcrumb">
+            <li><a asp-area="job_vacancy" asp-controller="jobHome" asp-action="Index">工作媒合管理</a></li>
+            /
+            <li><a href="#" class="active">@ViewData["Title"]</a></li>
+        </ul>
+    </div>
+    <!-- 主頁上方操作流程序-->
+</div>
+<div>
+    <ul class="crudlist">
+        <li>    
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                新增
+            </button>
+        </li>
+        <li><button class="btn btn-primary">刪除</button></li>
+        <li><button class="btn btn-secondary">修改</button></li>
+    </ul>
+</div>
+<div class="bottom-data">
+    <div class="orders">
+        @* 表格標題 *@
+        <div class="header">
+            <i class='bx bx-receipt'></i> <!-- 表格的小icon -->
+            <h3>履歷一覽</h3>
+        </div>
+        @* 表格內容 *@
+        <table id="test_table">
+            <thead class="imthead">
+                <tr>
+                    <td>@Html.DisplayNameFor(model => model.Name)</td>
+                    <td>@Html.DisplayNameFor(model => model.ClassName)</td>
+                    <td>@Html.DisplayNameFor(model => model.ResumeTitle)</td>
+                    <td>@Html.DisplayNameFor(model => model.HopeJobTitle)</td>
+                    <td>@Html.DisplayNameFor(model => model.HopeSalary)</td>
+                    <td>@Html.DisplayNameFor(model => model.HopeLocation)</td>
+                    <td>@Html.DisplayNameFor(model => model.ResumeStatus)</td>
+                    <td>@Html.DisplayNameFor(model => model.LastUpdate)</td>
+                </tr>
+            </thead>
+            @* 表格內容輸入地方 *@
+        </table>
+        @* 表格結束 *@
+    </div>
+</div>
+
+<!-- Modal 互動視窗：新增履歷 -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <!--表單標題-->
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">新增履歷</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!--表單內容-->
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <!-- 1.學生資料-->
+                    <div class="row">
+                        <div class="col-md-4">.col-md-4</div>
+                        <div class="col-md-4 ms-auto">.col-md-4 .ms-auto</div>
+                    </div>
+                    <!-- 2.技能能力-->
+                    <div class="row">
+                        <div class="col-md-3 ms-auto">.col-md-3 .ms-auto</div>
+                        <div class="col-md-2 ms-auto">.col-md-2 .ms-auto</div>
+                    </div>
+                    <!-- 3.工作經驗-->
+                    <div class="row">
+                        <div class="col-md-6 ms-auto">.col-md-6 .ms-auto</div>
+                    </div>
+                    <!-- 4.求職條件-->
+                    <div class="row">
+                        <div class="col-sm-9">
+                            Level 1: .col-sm-9
+                            <div class="row">
+                                <div class="col-8 col-sm-6">
+                                    Level 2: .col-8 .col-sm-6
+                                </div>
+                                <div class="col-4 col-sm-6">
+                                    Level 2: .col-4 .col-sm-6
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 5.自傳-->
+                    <div class="row">
+                        <div class="col-md-6 ms-auto">.col-md-6 .ms-auto</div>
+                    </div>
+                </div>
+            </div>
+            <!--表單腳部-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary">儲存</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/lib/datatables/js/jquery.datatables.min.js"></script>
+    <script src="//cdn.datatables.net/fixedheader/3.4.0/js/dataTables.fixedHeader.min.js"> </script>
+    <script>
+        $(document).ready(function () {
+            //限制網頁不要出現卷軸
+            document.documentElement.style.overflow = 'hidden';
+
+            //帶入資料進dataTable
+            $("table").dataTable({
+                autoWidth: false,
+                ajax: {
+                    type: 'GET',
+                    url: "/job_vacancy/api/resume",
+                    dataSrc: function (json) {
+                        return json;
+                    }
+                },
+                columns: [
+                    { "data": "studentName" },
+                    { "data": "classes" },
+                    { "data": "resumeName" },
+                    { "data": "hopeJobTitle" },
+                    { "data": "hopeSalary" },
+                    { "data": "hopeLocation" },
+                    { "data": "resumeStatus" },
+                    { "data": "lastUpdate" },
+                    { "data": "resumeId", "visible": false }, //放入表格pk但不要顯示，為了在row中引用
+                    {
+                        data: null,
+                        title: "function",
+                        render: function (data, type, row) {
+                            //引入icon與表格pk識別
+                            return `<i class="bx bxs-trash-alt"data-id="${row.resumeId}" ></i>&nbsp;&nbsp;&nbsp;
+                                    <i class="bx bxs-message-square-edit" data-id="${row.resumeId}"></i>`
+                        }
+                    }
+                ],
+                order: [
+                    [7, 'desc'] // 按 lastUpdate 降冪排序 //無作用
+                ],
+                fixedHeader: { header: true },
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/zh-HANT.json'
+                },
+            });
+            $('#test_table tbody').on('click', 'i.bxs-trash-alt', async function () {
+                var resumeId = $(this).data('id');
+            });
+
+            $('#test_table tbody').on('click', 'i.bxs-message-square-edit', async function () {
+                var resumeId = $(this).data('id');
+            });
+        })
+    </script>
+}

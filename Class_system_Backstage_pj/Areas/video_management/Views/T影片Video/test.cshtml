@@ -1,0 +1,121 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+    <!-- Modal -->
+    <div class="modal fade" id="addEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">新增/編輯影片</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Form for adding/editing video -->
+            <form id="videoForm">
+              <input type="hidden" id="videoId" />
+              <div class="mb-3">
+                <label for="videoTitle" class="form-label">影片標題</label>
+                <input type="text" class="form-control" id="videoTitle" required>
+              </div>
+              <div class="mb-3">
+                <label for="videoUrl" class="form-label">影片路徑</label>
+                <input type="text" class="form-control" id="videoUrl" required>
+              </div>
+              <div class="mb-3">
+                <label for="videoPrice" class="form-label">價格</label>
+                <input type="text" class="form-control" id="videoPrice" required>
+              </div>
+              <button type="submit" class="btn btn-primary">提交</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @section Scripts
+        {
+        <script>
+                $(document).ready(function () {
+                    // Function to handle form submission
+                    $("#videoForm").submit(function (event) {
+                        event.preventDefault(); // Prevent default form submission
+                        var videoId = $("#videoId").val();
+                        var videoTitle = $("#videoTitle").val();
+                        var videoUrl = $("#videoUrl").val();
+                        var videoPrice = $("#videoPrice").val();
+                        var url = "/video_management/T影片Video/";
+                        var method = "POST";
+
+                        // Determine if we're adding or updating a video
+                        if (videoId) {
+                            url += "UpdateJson";
+                            method = "PUT";
+                        } else {
+                            url += "CreateJson";
+                        }
+
+                        // AJAX call to the server
+                        $.ajax({
+                            url: url,
+                            method: method,
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                fVideoTitle: videoTitle,
+                                fImagePath: videoUrl,
+                                fPrice: videoPrice
+                            }),
+                            success: function (response) {
+                                $('#addEditModal').modal('hide'); // Hide the modal
+                                location.reload(); // Reload the page to reflect changes
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.responseText);
+                                alert("An error occurred while processing your request. Please try again.");
+                            }
+                        });
+                    });
+
+                    // Function to handle delete operation
+                    $('#test_table tbody').on('click', 'i.bxs-trash-alt', function () {
+                        var videoId = $(this).data('id');
+                        if (confirm("Are you sure you want to delete this video?")) {
+                            $.ajax({
+                                url: "/video_management/T影片Video/DeleteJson/" + videoId,
+                                method: "DELETE",
+                                success: function (response) {
+                                    location.reload(); // Reload the page to reflect changes
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                    alert("An error occurred while processing your request. Please try again.");
+                                }
+                            });
+                        }
+                    });
+
+                    // Function to handle edit operation
+                    $('#test_table tbody').on('click', 'i.bxs-message-square-edit', function () {
+                        var videoId = $(this).data('id');
+                        $.ajax({
+                            url: "/video_management/T影片Video/DetailsJson/" + videoId,
+                            method: "GET",
+                            success: function (response) {
+                                // Populate the modal with video details
+                                $("#videoId").val(response.fVideoId);
+                                $("#videoTitle").val(response.fVideoTitle);
+                                $("#videoUrl").val(response.fImagePath);
+                                $("#videoPrice").val(response.fPrice);
+                                $('#addEditModal').modal('show'); // Show the modal
+                            },
+                            error: function (xhr, status, error) {
+                                console.error(xhr.responseText);
+                                alert("An error occurred while processing your request. Please try again.");
+                            }
+                        });
+                    });
+                });
+        </script>
+    }
+
+
